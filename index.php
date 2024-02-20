@@ -61,7 +61,7 @@
 					<div class="alert">
 					<?php
 					if(isset($_SESSION['status'])){
-						echo "<h4>" . $_SESSION['status'] . "</h4>";
+						echo "<h4 style='margin:10px'>" . $_SESSION['status'] . "</h4>";
 						unset($_SESSION['status']);
 					}
 					?>

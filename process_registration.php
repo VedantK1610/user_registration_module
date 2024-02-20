@@ -50,7 +50,7 @@ function isEmailValid($email) {
 function send_verification_mail($full_name,$email,$verification_token){
     $mail = new PHPMailer();
     $mail->isSMTP();
-    $mail->SMTPDebug =1;
+    $mail->SMTPDebug =0;
     $mail->Host = 'smtp.gmail.com';
     $mail->Port = 587;
     $mail->SMTPAuth = true;
@@ -60,13 +60,73 @@ function send_verification_mail($full_name,$email,$verification_token){
     $mail->setFrom('trialmepleasevk@gmail.com', 'Fameux Technologies');
     $mail->AddAddress($email);
     $mail->Subject = 'Email Verification From Fameux Technologies pvt ltd.';
+    $mail->isHTML(true);
 
     $email_template="
-        <h2>You have registered with Fameux Technologies pvt ltd.</h2>
-        <h5>Verify your email address from following link</h5>
-        <br/>
-        <br/>
+        <!DOCTYPE html>
+        <html lang='en'>
+        <html>
+        <head>
+        <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        p {
+            color: #555;
+            margin: 15px 0;
+        }
+
+        h5 {
+            color: #666;
+        }
+
+        a {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 15px 30px;
+            text-decoration: none;
+            background-color: #e7e7e7;
+            color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #008CBA;;
+        }
+    </style>
+        </head> 
+        <body>
+        <h1>Welcome to Fameux Technologies!</h1>
+        <h2>You have successfully registered with us.</h2>
+        <p>Get ready to embark on a journey of innovation and excellence. By joining Fameux Technologies, you've become a part of a dynamic community committed to pushing boundaries.</p>
+        <h5>To get started, please verify your email address by clicking the link below:</h5>
         <a href='http://localhost/trial_project/verify-email.php?token=$verification_token'>Click Here !</a>
+        <p>Thank you for choosing Fameux Technologies! We look forward to achieving great things together.</p>
+        </body>
+        </html>
     ";
 
     $mail->Body = $email_template;
