@@ -2,7 +2,7 @@
 // Connect to your MySQL database
 session_start();
 include ('dbconn.php');
-include('smtp/PHPMailerAutoload.php');
+require 'PHPMailer/PHPMailerAutoload.php';
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -114,7 +114,8 @@ function send_verification_mail($full_name,$email,$verification_token){
         }
 
         a:hover {
-            background-color: #008CBA;;
+            background-color: #008CBA;
+            color:white;
         }
     </style>
         </head> 
@@ -141,48 +142,56 @@ function send_verification_mail($full_name,$email,$verification_token){
 
 if (isset($_POST['register_button'])){
 // Get form data
-$full_name = $_POST['full_name'];
-$email = $_POST['email'];
-$mobile_num = $_POST['mobile_num'];
-// $qualification = $_POST['qualification'];
-// $area_of_interest = $_POST['area_of_interest'];
-$password = $_POST['password'];
-$verification_token=md5(rand());
+    $full_name = $_POST['full_name'];
+    $email = $_POST['email'];
+    $mobile_num = $_POST['mobile_num'];
+    // $qualification = $_POST['qualification'];
+    // $area_of_interest = $_POST['area_of_interest'];
+    $password = $_POST['password'];
+    $verification_token=md5(rand());
 
-if (!isPasswordValid($password)) {
-    die("Error: Password does not meet the criteria.");
-}
-
-if (!isEmailValid($email)) {
-    die("Error: Invalid email address.");
-}
-
-$check_email_query="SELECT email FROM trial_table WHERE email='$email' LIMIT 1";
-$check_email_query_run= mysqli_query($conn , $check_email_query);
-
-if(mysqli_num_rows($check_email_query_run)>0){
-    $_SESSION['status']="Email Already Exist";
-    header("Location:index.php");
-}
-else{
-     $uuid = uniqid();
-
-    // Insert data into the database
-    $sql = "INSERT INTO trial_table (user_id,full_name, email, mobile_num, password,verification_token) 
-            VALUES ('$uuid','$full_name', '$email', '$mobile_num', '$password','$verification_token')";
-    $query_run=mysqli_query($conn , $sql);        
-
-    if ($query_run) {
-
-        send_verification_mail("$full_name","$email","$verification_token");
-
-        $_SESSION['status']="Registeres Successfuly ! Please check your email";
-
-    } else {
-        $_SESSION['status']="Registeres Failed !";
-        header("Location:index.php");
+    if (!isPasswordValid($password)) {
+        die("Error: Password does not meet the criteria.");
     }
-}
+
+    if (!isEmailValid($email)) {
+        die("Error: Invalid email address.");
+    }
+
+    #check here condition if not entered mail and mobile both
+
+    #check if entered both
+
+    #check here condition if user entered mail do this
+        $check_email_query="SELECT email FROM trial_table WHERE email='$email' LIMIT 1";
+        $check_email_query_run= mysqli_query($conn , $check_email_query);
+
+        if(mysqli_num_rows($check_email_query_run)>0){
+            $_SESSION['status']="Email Already Exist";
+            header("Location:index.php");
+        }
+        else{
+            $uuid = uniqid();
+
+            // Insert data into the database
+            $sql = "INSERT INTO trial_table (user_id,full_name, email, mobile_num, password,verification_token) 
+                    VALUES ('$uuid','$full_name', '$email', '$mobile_num', '$password','$verification_token')";
+            $query_run=mysqli_query($conn , $sql);        
+
+            if ($query_run) {
+
+                send_verification_mail("$full_name","$email","$verification_token");
+
+                $_SESSION['status']="Registeres Successfuly ! Please check your email";
+
+            } else {
+                $_SESSION['status']="Registeres Failed !";
+                header("Location:index.php");
+            }
+        }
+    
+    #check if user entered mobile num do this    
+
 
 
 // Close the database connection
